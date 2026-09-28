@@ -186,11 +186,11 @@
         <div class="grid-2">
             <div class="form-group">
                 <label>Jumlah Jamaah (Pax)</label>
-                <input type="number" id="jumlah_jamaah" placeholder="Contoh: 2" min="1">
+                <input type="number" id="jumlah_jamaah" value="1" min="1">
             </div>
             <div class="form-group">
                 <label>Kurs 1 SAR ke IDR</label>
-                <input type="text" class="rupiah" id="kurs" placeholder="Contoh: 4.350">
+                <input type="text" class="rupiah" id="kurs">
             </div>
         </div>
     </div>
@@ -199,7 +199,7 @@
     <div class="section-title">✈️ Tiket Pesawat PP</div>
     <div class="form-group">
         <label>Harga Tiket per Pax (IDR)</label>
-        <input type="text" class="rupiah" id="tiket_pesawat" placeholder="0">
+        <input type="text" class="rupiah" id="tiket_pesawat">
     </div>
 
     <!-- HOTEL MADINAH -->
@@ -207,11 +207,11 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Durasi (Malam)</label>
-            <input type="number" id="h2_days" placeholder="0" min="0">
+            <input type="number" id="h2_days" min="0">
         </div>
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
-            <input type="text" class="rupiah" id="h2_price" placeholder="0">
+            <input type="text" class="rupiah" id="h2_price">
         </div>
     </div>
 
@@ -220,11 +220,11 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Durasi (Malam)</label>
-            <input type="number" id="h1_days" placeholder="0" min="0">
+            <input type="number" id="h1_days" min="0">
         </div>
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
-            <input type="text" class="rupiah" id="h1_price" placeholder="0">
+            <input type="text" class="rupiah" id="h1_price">
         </div>
     </div>
 
@@ -233,11 +233,11 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Makan / Hari / Pax (SAR)</label>
-            <input type="text" class="rupiah" id="makan_price" placeholder="0">
+            <input type="text" class="rupiah" id="makan_price">
         </div>
         <div class="form-group">
             <label>Total Hari Makan</label>
-            <input type="number" id="makan_days" placeholder="0" min="0">
+            <input type="number" id="makan_days" min="0">
         </div>
     </div>
 
@@ -245,7 +245,7 @@
     <div class="section-title">📄 Visa & Asuransi</div>
     <div class="form-group">
         <label>Visa + Asuransi per Pax (SAR)</label>
-        <input type="text" class="rupiah" id="visa_price" placeholder="0">
+        <input type="text" class="rupiah" id="visa_price">
     </div>
 
     <!-- TRANSPORTASI ARAB SAUDI -->
@@ -253,16 +253,16 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Bandara - Madinah (SAR)</label>
-            <input type="text" class="rupiah" id="t1_price" placeholder="0">
+            <input type="text" class="rupiah" id="t1_price">
         </div>
         <div class="form-group">
             <label>Madinah - Makkah (SAR)</label>
-            <input type="text" class="rupiah" id="t2_price" placeholder="0">
+            <input type="text" class="rupiah" id="t2_price">
         </div>
     </div>
     <div class="form-group">
         <label>Makkah - Bandara Jeddah (SAR)</label>
-        <input type="text" class="rupiah" id="t3_price" placeholder="0">
+        <input type="text" class="rupiah" id="t3_price">
     </div>
 
     <!-- HASIL TOTAL -->
@@ -400,7 +400,9 @@ Mohon berikan:
             resultBox.innerText = data.reply;
             resultBox.classList.remove('hidden');
         } catch (err) {
-            errorBox.innerText = "Kendala AI: " + err.message;
+            errorBox.innerText = err.message.includes('503') 
+                ? "mohon maaf saat ini server google sedang sibuk, silahkan coba lagi nanti"
+                : err.message;
             errorBox.classList.remove('hidden');
         } finally {
             loadingBox.classList.add('hidden');
