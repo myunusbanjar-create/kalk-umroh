@@ -1,12 +1,9 @@
 import json
 import os
+import urllib.request
 from http.server import BaseHTTPRequestHandler
-import google.generativeai as genai
 
-# Konfigurasi Gemini API
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
-if API_KEY:
-    genai.configure(api_key=API_KEY)
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -32,16 +29,38 @@ class handler(BaseHTTPRequestHandler):
             prompt_text = req_json.get('prompt', '')
 
             if not API_KEY:
-                raise ValueError("GEMINI_API_KEY belum dikonfigurasi di Environment Variables Vercel.")
+                raise ValueError("GEMINI_API_KEY belum disetel di Vercel Environment Variables.")
 
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            response = model.generate_content(prompt_text)
+            # Menggunakan endpoint gemini-flash-latest via REST API
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={API_KEY}"
+            
+            payload = {
+                "contents": [
+                    {
+                        "parts": [
+                            {"text": prompt_text}
+                        ]
+                    }
+                ]
+            }
+
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'},
+                method='POST'
+            )
+
+            with urllib.request.urlopen(req) as resp:
+                resp_data = json.loads(resp.read().decode('utf-8'))
+                
+            reply_text = resp_data["candidates"][0]["content"]["parts"][0]["text"]
 
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
-            self.wfile.write(json.dumps({"reply": response.text}).encode('utf-8'))
+            self.wfile.write(json.dumps({"reply": reply_text}).encode('utf-8'))
 
         except Exception as e:
             self.send_response(500)

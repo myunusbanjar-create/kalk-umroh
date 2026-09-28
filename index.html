@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Komponen Umroh Mandiri</title>
+    <title>Kalkulator Umroh Mandiri</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0d9488">
     <style>
         :root {
             --primary: #0d9488;
-            --primary-dark: #0f766e;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --accent: #f59e0b;
         }
         * {
             box-sizing: border-box;
@@ -36,7 +34,7 @@
             background: var(--card-bg);
             border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border);
         }
         .header {
@@ -81,7 +79,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        input, select {
+        input {
             width: 100%;
             padding: 10px 12px;
             border-radius: 10px;
@@ -110,7 +108,6 @@
             color: white;
             text-align: center;
             margin: 24px 0 16px 0;
-            box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.3);
         }
         .total-summary .sub {
             font-size: 0.8rem;
@@ -142,15 +139,10 @@
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
             transition: all 0.2s;
         }
         button.btn-ai:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
         }
         .hidden {
             display: none !important;
@@ -161,6 +153,7 @@
             border-radius: 12px;
             font-size: 0.88rem;
             line-height: 1.6;
+            white-space: pre-wrap;
         }
         #ai-result {
             background: #ffffff;
@@ -177,7 +170,6 @@
             border: 1.5px solid #bfdbfe;
             color: #1d4ed8;
             text-align: center;
-            font-weight: 500;
         }
     </style>
 </head>
@@ -194,11 +186,11 @@
         <div class="grid-2">
             <div class="form-group">
                 <label>Jumlah Jamaah (Pax)</label>
-                <input type="number" id="jumlah_jamaah" value="2" min="1">
+                <input type="number" id="jumlah_jamaah" placeholder="Contoh: 2" min="1">
             </div>
             <div class="form-group">
                 <label>Kurs 1 SAR ke IDR</label>
-                <input type="text" class="rupiah" id="kurs" value="4.350">
+                <input type="text" class="rupiah" id="kurs" placeholder="Contoh: 4.350">
             </div>
         </div>
     </div>
@@ -207,7 +199,7 @@
     <div class="section-title">✈️ Tiket Pesawat PP</div>
     <div class="form-group">
         <label>Harga Tiket per Pax (IDR)</label>
-        <input type="text" class="rupiah" id="tiket_pesawat" value="13.500.000">
+        <input type="text" class="rupiah" id="tiket_pesawat" placeholder="0">
     </div>
 
     <!-- HOTEL MADINAH -->
@@ -215,11 +207,11 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Durasi (Malam)</label>
-            <input type="number" id="h2_days" value="4" min="0">
+            <input type="number" id="h2_days" placeholder="0" min="0">
         </div>
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
-            <input type="text" class="rupiah" id="h2_price" value="450">
+            <input type="text" class="rupiah" id="h2_price" placeholder="0">
         </div>
     </div>
 
@@ -228,29 +220,32 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Durasi (Malam)</label>
-            <input type="number" id="h1_days" value="5" min="0">
+            <input type="number" id="h1_days" placeholder="0" min="0">
         </div>
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
-            <input type="text" class="rupiah" id="h1_price" value="550">
+            <input type="text" class="rupiah" id="h1_price" placeholder="0">
         </div>
     </div>
 
-    <!-- KONSUMSI & VISA -->
-    <div class="section-title">🍽️ Konsumsi & Visa</div>
+    <!-- KONSUMSI -->
+    <div class="section-title">🍽️ Konsumsi & Makan</div>
     <div class="grid-2">
         <div class="form-group">
             <label>Makan / Hari / Pax (SAR)</label>
-            <input type="text" class="rupiah" id="makan_price" value="60">
+            <input type="text" class="rupiah" id="makan_price" placeholder="0">
         </div>
         <div class="form-group">
             <label>Total Hari Makan</label>
-            <input type="number" id="makan_days" value="9" min="0">
+            <input type="number" id="makan_days" placeholder="0" min="0">
         </div>
     </div>
+
+    <!-- VISA & ASURANSI -->
+    <div class="section-title">📄 Visa & Asuransi</div>
     <div class="form-group">
         <label>Visa + Asuransi per Pax (SAR)</label>
-        <input type="text" class="rupiah" id="visa_price" value="550">
+        <input type="text" class="rupiah" id="visa_price" placeholder="0">
     </div>
 
     <!-- TRANSPORTASI ARAB SAUDI -->
@@ -258,16 +253,16 @@
     <div class="grid-2">
         <div class="form-group">
             <label>Bandara - Madinah (SAR)</label>
-            <input type="text" class="rupiah" id="t1_price" value="200">
+            <input type="text" class="rupiah" id="t1_price" placeholder="0">
         </div>
         <div class="form-group">
             <label>Madinah - Makkah (SAR)</label>
-            <input type="text" class="rupiah" id="t2_price" value="500">
+            <input type="text" class="rupiah" id="t2_price" placeholder="0">
         </div>
     </div>
     <div class="form-group">
         <label>Makkah - Bandara Jeddah (SAR)</label>
-        <input type="text" class="rupiah" id="t3_price" value="250">
+        <input type="text" class="rupiah" id="t3_price" placeholder="0">
     </div>
 
     <!-- HASIL TOTAL -->
@@ -292,7 +287,7 @@
 <script>
     function getVal(id) {
         let el = document.getElementById(id);
-        if (!el) return 0;
+        if (!el || !el.value) return 0;
         let clean = el.value.toString().replace(/[^0-9]/g, '');
         return clean ? parseFloat(clean) : 0;
     }
@@ -301,7 +296,6 @@
         return 'Rp ' + Math.round(num).toLocaleString('id-ID');
     }
 
-    // Format otomatis ribuan saat mengetik
     document.querySelectorAll('.rupiah').forEach(input => {
         input.addEventListener('input', function() {
             let num = this.value.replace(/[^0-9]/g, '');
@@ -316,11 +310,10 @@
 
     function calculateAll() {
         let jamaah = getVal('jumlah_jamaah') || 1;
-        let kurs = getVal('kurs') || 1;
+        let kurs = getVal('kurs') || 0;
 
         let tiket = getVal('tiket_pesawat') * jamaah;
 
-        // Hotel: Asumsi 1 kamar muat untuk 2 orang
         let kamar = Math.ceil(jamaah / 2);
         let h2_sar = getVal('h2_price') * getVal('h2_days') * kamar;
         let h1_sar = getVal('h1_price') * getVal('h1_days') * kamar;
@@ -330,7 +323,7 @@
         let trans_sar = getVal('t1_price') + getVal('t2_price') + getVal('t3_price');
 
         let total_sar = h2_sar + h1_sar + makan_sar + visa_sar + trans_sar;
-        let grand_total = tiket + (total_sar * kurs);
+        let grand_total = tiket + (total_sar * (kurs || 1));
         let per_pax = grand_total / jamaah;
 
         document.getElementById('grand_total_idr').innerText = formatRupiah(grand_total);
@@ -338,8 +331,6 @@
 
         return { jamaah, kurs, grand_total, per_pax };
     }
-
-    calculateAll();
 
     const analyzeWithAI = async () => {
         const totalIdrText = document.getElementById('grand_total_idr').innerText;
@@ -356,7 +347,7 @@
         }
 
         if (totalIdrText === 'Rp 0') {
-            errorBox.innerText = "Silakan lengkapi rincian biaya sebelum meminta analisis AI.";
+            errorBox.innerText = "Silakan isi rincian biaya terlebih dahulu.";
             errorBox.classList.remove('hidden');
             return;
         }
@@ -380,21 +371,21 @@
         const t3 = getVal('t3_price');
         const jamaah = getVal('jumlah_jamaah') || 1;
 
-        const promptText = `Anda adalah konsultan Umroh mandiri profesional. Tolong analisis rencana anggaran Umroh berikut:
+        const promptText = `Anda adalah konsultan Umroh profesional. Tolong berikan analisis singkat dan saran untuk anggaran berikut:
 - Jumlah Jamaah: ${jamaah} Pax
-- Kurs SAR: Rp ${kurs.toLocaleString('id-ID')}
-- Tiket Pesawat PP: Rp ${tiket.toLocaleString('id-ID')} / pax
+- Kurs SAR ke IDR: Rp ${kurs.toLocaleString('id-ID')}
+- Tiket Pesawat: Rp ${tiket.toLocaleString('id-ID')} / pax
 - Hotel Madinah: ${h2_price} SAR/malam (${h2_days} malam)
 - Hotel Makkah: ${h1_price} SAR/malam (${h1_days} malam)
-- Konsumsi Makan: ${makan_price} SAR/hari (${makan_days} hari)
-- Biaya Visa: ${visa} SAR / pax
-- Biaya Transportasi Lokal (SAR): Bandara-Madinah (${t1}), Madinah-Makkah (${t2}), Makkah-Jeddah (${t3})
-- Total Estimasi Keseluruhan: ${totalIdrText}
+- Biaya Makan: ${makan_price} SAR/hari (${makan_days} hari)
+- Biaya Visa & Asuransi: ${visa} SAR / pax
+- Transportasi: Bandara-Madinah (${t1} SAR), Madinah-Makkah (${t2} SAR), Makkah-Jeddah (${t3} SAR)
+- Total Estimasi: ${totalIdrText}
 
-Berikan kesimpulan ringkas:
-1. Kelayakan budget (realistis atau terlalu mepet).
-2. Potensi biaya tak terduga.
-3. 2-3 tips efisiensi praktis.`;
+Mohon berikan:
+1. Evaluasi apakah budget ini masuk akal.
+2. Pos pengeluaran yang perlu diantisipasi membengkak.
+3. Tips praktis untuk efisiensi pengeluaran.`;
 
         try {
             const response = await fetch('/api', {
@@ -406,8 +397,7 @@ Berikan kesimpulan ringkas:
             if (!response.ok || data.error) {
                 throw new Error(data.error || response.statusText);
             }
-            let reply = data.reply || "";
-            resultBox.innerText = reply.trim();
+            resultBox.innerText = data.reply;
             resultBox.classList.remove('hidden');
         } catch (err) {
             errorBox.innerText = "Kendala AI: " + err.message;
