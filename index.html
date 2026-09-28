@@ -1,97 +1,274 @@
-const analyzeWithAI = async () => {
-            const totalIdrText = document.getElementById('grand_total_idr').innerText;
-            const errorBox = document.getElementById('ai-error');
-            const resultBox = document.getElementById('ai-result');
-            const loadingBox = document.getElementById('ai-loading');
-            const btnAI = document.getElementById('btn-ai');
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Budget Umroh</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d9488">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        h1 {
+            color: #0d9488;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #0d9488;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .total-box {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .total-box .label {
+            font-size: 0.85rem;
+            color: #0f766e;
+            font-weight: 600;
+        }
+        .total-box .amount {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0d9488;
+            margin-top: 4px;
+        }
+        button.btn-ai {
+            width: 100%;
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.btn-ai:hover {
+            background: #0f766e;
+        }
+        button.btn-ai:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .ai-result {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #64748b;
+            display: none;
+        }
+    </style>
+</head>
+<body>
 
-            const kurs = getVal('kurs');
-            if (kurs <= 0) {
-                errorBox.innerText = "Silakan masukkan nilai Kurs 1 SAR terlebih dahulu.";
-                errorBox.classList.remove('hidden');
-                setTimeout(() => errorBox.classList.add('hidden'), 4000);
-                return;
+<div class="container">
+    <h1>Kalkulator Budget Umroh</h1>
+
+    <div class="grid-2">
+        <div class="form-group">
+            <label>Jumlah Jamaah (Orang)</label>
+            <input type="number" id="jamaah" value="1" min="1" oninput="calculate()">
+        </div>
+        <div class="form-group">
+            <label>Durasi (Hari)</label>
+            <input type="number" id="durasi" value="9" min="1" oninput="calculate()">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Tiket Pesawat PP (per Orang)</label>
+        <input type="text" class="rupiah" id="tiket" value="13.500.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Visa + Asuransi (per Orang)</label>
+        <input type="text" class="rupiah" id="visa" value="3.500.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Hotel Makkah (per Malam/Kamar)</label>
+        <input type="text" class="rupiah" id="hotel_makkah" value="1.200.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Hotel Madinah (per Malam/Kamar)</label>
+        <input type="text" class="rupiah" id="hotel_madinah" value="1.000.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Makan & Minum (per Hari/Orang)</label>
+        <input type="text" class="rupiah" id="makan" value="250.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Transportasi Bus / Kereta Cepat (per Orang)</label>
+        <input type="text" class="rupiah" id="transport" value="1.500.000" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>Biaya Tak Terduga / Oleh-oleh</label>
+        <input type="text" class="rupiah" id="lainnya" value="2.000.000" oninput="calculate()">
+    </div>
+
+    <div class="total-box">
+        <div class="label">ESTIMASI TOTAL BIAYA</div>
+        <div class="amount" id="total_display">Rp 0</div>
+    </div>
+
+    <button class="btn-ai" id="btn-ai" onclick="analyzeAI()">✨ Analisis Anggaran dengan AI</button>
+    <div class="loading" id="loading">Sedang menganalisis anggaran dengan Gemini...</div>
+    <div class="ai-result" id="ai-result"></div>
+</div>
+
+<script>
+    // Format Pemisah Ribuan (Ribuan Otomatis)
+    document.querySelectorAll('.rupiah').forEach(input => {
+        input.addEventListener('keyup', function(e) {
+            let value = this.value.replace(/[^0-9]/g, '');
+            this.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
+            calculate();
+        });
+    });
+
+    function parseVal(id) {
+        let el = document.getElementById(id);
+        if (!el) return 0;
+        let clean = el.value.toString().replace(/[^0-9]/g, '');
+        return clean ? parseInt(clean, 10) : 0;
+    }
+
+    function calculate() {
+        let j = parseVal('jamaah') || 1;
+        let d = parseVal('durasi') || 1;
+        let tiket = parseVal('tiket') * j;
+        let visa = parseVal('visa') * j;
+        
+        // Estimasi pembagian durasi hotel
+        let malamMakkah = Math.ceil(d / 2);
+        let malamMadinah = Math.floor(d / 2);
+        let kamar = Math.ceil(j / 2); // 1 kamar untuk 2 orang
+        
+        let hotelMakkah = parseVal('hotel_makkah') * malamMakkah * kamar;
+        let hotelMadinah = parseVal('hotel_madinah') * malamMadinah * kamar;
+        let makan = parseVal('makan') * d * j;
+        let transport = parseVal('transport') * j;
+        let lainnya = parseVal('lainnya') * j;
+
+        let total = tiket + visa + hotelMakkah + hotelMadinah + makan + transport + lainnya;
+        document.getElementById('total_display').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        return { j, d, tiket, visa, hotelMakkah, hotelMadinah, makan, transport, lainnya, total };
+    }
+
+    calculate();
+
+    async function analyzeAI() {
+        let data = calculate();
+        let btn = document.getElementById('btn-ai');
+        let loading = document.getElementById('loading');
+        let resDiv = document.getElementById('ai-result');
+
+        btn.disabled = true;
+        loading.style.display = 'block';
+        resDiv.style.display = 'none';
+
+        let prompt = `Sebagai konsultan travel Umroh profesional, berikan analisis singkat dan saran efisiensi untuk rancangan anggaran berikut:
+- Jumlah Jamaah: ${data.j} orang
+- Durasi: ${data.d} hari
+- Total Tiket Pesawat: Rp ${data.tiket.toLocaleString('id-ID')}
+- Total Visa & Asuransi: Rp ${data.visa.toLocaleString('id-ID')}
+- Total Akomodasi Hotel: Rp ${(data.hotelMakkah + data.hotelMadinah).toLocaleString('id-ID')}
+- Total Konsumsi: Rp ${data.makan.toLocaleString('id-ID')}
+- Transportasi Lokal: Rp ${data.transport.toLocaleString('id-ID')}
+- Biaya Lain-lain: Rp ${data.lainnya.toLocaleString('id-ID')}
+- ESTIMASI TOTAL KESELURUHAN: Rp ${data.total.toLocaleString('id-ID')}
+
+Berikan penilaian apakah rancangan budget ini realistis, komponen apa yang paling menyerap biaya, dan 2-3 tips hemat yang aman. Buat ringkas dan terstruktur.`;
+
+        try {
+            let res = await fetch('/api', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt })
+            });
+            let result = await res.json();
+            if (result.error) {
+                resDiv.innerText = "Gagal memproses AI: " + result.error;
+            } else {
+                resDiv.innerText = result.reply;
             }
+        } catch (err) {
+            resDiv.innerText = "Terjadi kendala jaringan: " + err.message;
+        } finally {
+            btn.disabled = false;
+            loading.style.display = 'none';
+            resDiv.style.display = 'block';
+        }
+    }
 
-            if (totalIdrText === 'Rp 0' || totalIdrText === 'Rp0') {
-                errorBox.innerText = "Silakan lengkapi rincian biaya sebelum meminta analisis AI.";
-                errorBox.classList.remove('hidden');
-                setTimeout(() => errorBox.classList.add('hidden'), 4000);
-                return;
-            }
-
-            if (!navigator.onLine) {
-                errorBox.innerText = "Koneksi offline. Analisis AI memerlukan koneksi internet aktif.";
-                errorBox.classList.remove('hidden');
-                return;
-            }
-
-            errorBox.classList.add('hidden');
-            resultBox.classList.add('hidden');
-            loadingBox.classList.remove('hidden');
-            btnAI.disabled = true;
-            btnAI.style.opacity = '0.6';
-
-            const tiket = getVal('tiket_pesawat');
-            const h2_price = getVal('h2_price');
-            const h2_days = getVal('h2_days');
-            const h1_price = getVal('h1_price');
-            const h1_days = getVal('h1_days');
-            const makan = getVal('makan_price');
-            const makan_days = getVal('makan_days');
-            const visa = getVal('visa_price');
-            const t1 = getVal('t1_price');
-            const t2 = getVal('t2_price');
-            const t3 = getVal('t3_price');
-            
-            const jamaahRaw = document.getElementById('jumlah_jamaah').value.replace(/\./g, '');
-            const jamaah = jamaahRaw === '' ? 1 : parseFloat(jamaahRaw);
-
-            const promptText = `Anda adalah konsultan Umroh mandiri profesional. Tolong analisis rencana anggaran Umroh berikut:
-- Jumlah Jamaah: ${jamaah} Pax
-- Kurs SAR: Rp ${kurs}
-- Tiket Pesawat PP: Rp ${tiket.toLocaleString('id-ID')} / pax
-- Hotel Madinah: ${h2_price} SAR/malam (${h2_days} malam)
-- Hotel Makkah: ${h1_price} SAR/malam (${h1_days} malam)
-- Konsumsi Makan: ${makan} SAR/hari (${makan_days} hari)
-- Biaya Visa: ${visa} SAR / pax
-- Biaya Transportasi Lokal (SAR): Bandara-Madinah (${t1}), Madinah-Makkah (${t2}), Makkah-Jeddah (${t3})
-- Total Estimasi Keseluruhan: ${totalIdrText}
-
-Berikan kesimpulan ringkas:
-1. Kelayakan budget (realistis atau terlalu mepet).
-2. Potensi biaya tak terduga.
-3. 2 tips efisiensi praktis.
-Jawab menggunakan format tag HTML sederhana <b>, <ul>, <li> tanpa markdown backtick.`;
-
-            try {
-                // Memanggil serverless function Vercel
-                const response = await fetch('/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptText })
-                });
-
-                const data = await response.json();
-
-                loadingBox.classList.add('hidden');
-                btnAI.disabled = false;
-                btnAI.style.opacity = '1';
-
-                if (!response.ok || data.error) {
-                    throw new Error(data.error || response.statusText);
-                }
-
-                let reply = data.text || "";
-                reply = reply.replace(/```html/gi, '').replace(/```/g, '').trim();
-                resultBox.innerHTML = reply;
-                resultBox.classList.remove('hidden');
-
-            } catch (err) {
-                loadingBox.classList.add('hidden');
-                btnAI.disabled = false;
-                btnAI.style.opacity = '1';
-                errorBox.innerHTML = `<b>Kendala AI:</b><br>${err.message}`;
-                errorBox.classList.remove('hidden');
-            }
-        };
+    // Registrasi Service Worker PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+</script>
+</body>
+</html>
