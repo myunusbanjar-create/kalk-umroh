@@ -24,7 +24,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            padding: 16px;
+            padding: 12px;
             display: flex;
             justify-content: center;
         }
@@ -33,58 +33,63 @@
             max-width: 650px;
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 24px;
+            padding: 20px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border);
         }
         .header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         .header h1 {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             color: var(--primary);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: 700;
         }
         .header p {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
         }
         .section-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-main);
-            margin: 20px 0 12px 0;
+            margin: 18px 0 10px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 6px;
+            padding-bottom: 5px;
         }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
         }
         label {
-            display: block;
-            font-size: 0.78rem;
+            display: flex;
+            align-items: flex-end;
+            min-height: 32px; /* Mengunci tinggi wadah agar input kiri & kanan sejajar */
+            font-size: 0.72rem;
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            line-height: 1.25;
         }
         input {
             width: 100%;
-            padding: 10px 12px;
-            border-radius: 10px;
+            padding: 9px 11px;
+            border-radius: 9px;
             border: 1.5px solid var(--border);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             background: #fff;
             color: var(--text-main);
             outline: none;
@@ -97,46 +102,46 @@
         .highlight-card {
             background: #f0fdfa;
             border: 1.5px solid #99f6e4;
-            padding: 14px;
+            padding: 12px;
             border-radius: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .total-summary {
             background: linear-gradient(135deg, #0d9488, #0f766e);
             border-radius: 16px;
-            padding: 20px;
+            padding: 18px;
             color: white;
             text-align: center;
-            margin: 24px 0 16px 0;
+            margin: 20px 0 14px 0;
         }
         .total-summary .sub {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.9;
         }
         .total-summary .main-amount {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 800;
-            margin: 6px 0;
+            margin: 5px 0;
         }
         .total-summary .per-pax {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             opacity: 0.95;
             background: rgba(255, 255, 255, 0.15);
             display: inline-block;
-            padding: 4px 14px;
+            padding: 4px 12px;
             border-radius: 20px;
-            margin-top: 4px;
+            margin-top: 3px;
         }
         button.btn-ai {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            border-radius: 11px;
+            font-size: 0.92rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -148,10 +153,10 @@
             display: none !important;
         }
         .info-box {
-            margin-top: 16px;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 0.88rem;
+            margin-top: 14px;
+            padding: 14px;
+            border-radius: 11px;
+            font-size: 0.85rem;
             line-height: 1.6;
             white-space: pre-wrap;
         }
@@ -202,33 +207,33 @@
         <input type="text" class="rupiah" id="tiket_pesawat">
     </div>
 
-    <!-- HOTEL MADINAH -->
+    <!-- HOTEL MADINAH (Kiri: SAR, Kanan: Hari/Malam) -->
     <div class="section-title">🏨 Hotel Madinah</div>
     <div class="grid-2">
-        <div class="form-group">
-            <label>Durasi (Malam)</label>
-            <input type="number" id="h2_days" min="0">
-        </div>
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
             <input type="text" class="rupiah" id="h2_price">
         </div>
-    </div>
-
-    <!-- HOTEL MAKKAH -->
-    <div class="section-title">🕋 Hotel Makkah</div>
-    <div class="grid-2">
         <div class="form-group">
             <label>Durasi (Malam)</label>
-            <input type="number" id="h1_days" min="0">
+            <input type="number" id="h2_days" min="0">
         </div>
+    </div>
+
+    <!-- HOTEL MAKKAH (Kiri: SAR, Kanan: Hari/Malam) -->
+    <div class="section-title">🕋 Hotel Makkah</div>
+    <div class="grid-2">
         <div class="form-group">
             <label>Harga Kamar / Malam (SAR)</label>
             <input type="text" class="rupiah" id="h1_price">
         </div>
+        <div class="form-group">
+            <label>Durasi (Malam)</label>
+            <input type="number" id="h1_days" min="0">
+        </div>
     </div>
 
-    <!-- KONSUMSI -->
+    <!-- KONSUMSI (Kiri: SAR, Kanan: Hari) -->
     <div class="section-title">🍽️ Konsumsi & Makan</div>
     <div class="grid-2">
         <div class="form-group">
