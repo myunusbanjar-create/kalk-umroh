@@ -1,0 +1,97 @@
+const analyzeWithAI = async () => {
+            const totalIdrText = document.getElementById('grand_total_idr').innerText;
+            const errorBox = document.getElementById('ai-error');
+            const resultBox = document.getElementById('ai-result');
+            const loadingBox = document.getElementById('ai-loading');
+            const btnAI = document.getElementById('btn-ai');
+
+            const kurs = getVal('kurs');
+            if (kurs <= 0) {
+                errorBox.innerText = "Silakan masukkan nilai Kurs 1 SAR terlebih dahulu.";
+                errorBox.classList.remove('hidden');
+                setTimeout(() => errorBox.classList.add('hidden'), 4000);
+                return;
+            }
+
+            if (totalIdrText === 'Rp 0' || totalIdrText === 'Rp0') {
+                errorBox.innerText = "Silakan lengkapi rincian biaya sebelum meminta analisis AI.";
+                errorBox.classList.remove('hidden');
+                setTimeout(() => errorBox.classList.add('hidden'), 4000);
+                return;
+            }
+
+            if (!navigator.onLine) {
+                errorBox.innerText = "Koneksi offline. Analisis AI memerlukan koneksi internet aktif.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            errorBox.classList.add('hidden');
+            resultBox.classList.add('hidden');
+            loadingBox.classList.remove('hidden');
+            btnAI.disabled = true;
+            btnAI.style.opacity = '0.6';
+
+            const tiket = getVal('tiket_pesawat');
+            const h2_price = getVal('h2_price');
+            const h2_days = getVal('h2_days');
+            const h1_price = getVal('h1_price');
+            const h1_days = getVal('h1_days');
+            const makan = getVal('makan_price');
+            const makan_days = getVal('makan_days');
+            const visa = getVal('visa_price');
+            const t1 = getVal('t1_price');
+            const t2 = getVal('t2_price');
+            const t3 = getVal('t3_price');
+            
+            const jamaahRaw = document.getElementById('jumlah_jamaah').value.replace(/\./g, '');
+            const jamaah = jamaahRaw === '' ? 1 : parseFloat(jamaahRaw);
+
+            const promptText = `Anda adalah konsultan Umroh mandiri profesional. Tolong analisis rencana anggaran Umroh berikut:
+- Jumlah Jamaah: ${jamaah} Pax
+- Kurs SAR: Rp ${kurs}
+- Tiket Pesawat PP: Rp ${tiket.toLocaleString('id-ID')} / pax
+- Hotel Madinah: ${h2_price} SAR/malam (${h2_days} malam)
+- Hotel Makkah: ${h1_price} SAR/malam (${h1_days} malam)
+- Konsumsi Makan: ${makan} SAR/hari (${makan_days} hari)
+- Biaya Visa: ${visa} SAR / pax
+- Biaya Transportasi Lokal (SAR): Bandara-Madinah (${t1}), Madinah-Makkah (${t2}), Makkah-Jeddah (${t3})
+- Total Estimasi Keseluruhan: ${totalIdrText}
+
+Berikan kesimpulan ringkas:
+1. Kelayakan budget (realistis atau terlalu mepet).
+2. Potensi biaya tak terduga.
+3. 2 tips efisiensi praktis.
+Jawab menggunakan format tag HTML sederhana <b>, <ul>, <li> tanpa markdown backtick.`;
+
+            try {
+                // Memanggil serverless function Vercel
+                const response = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptText })
+                });
+
+                const data = await response.json();
+
+                loadingBox.classList.add('hidden');
+                btnAI.disabled = false;
+                btnAI.style.opacity = '1';
+
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || response.statusText);
+                }
+
+                let reply = data.text || "";
+                reply = reply.replace(/```html/gi, '').replace(/```/g, '').trim();
+                resultBox.innerHTML = reply;
+                resultBox.classList.remove('hidden');
+
+            } catch (err) {
+                loadingBox.classList.add('hidden');
+                btnAI.disabled = false;
+                btnAI.style.opacity = '1';
+                errorBox.innerHTML = `<b>Kendala AI:</b><br>${err.message}`;
+                errorBox.classList.remove('hidden');
+            }
+        };
