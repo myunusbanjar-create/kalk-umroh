@@ -1,6 +1,7 @@
 import json
 import os
 import urllib.request
+import urllib.error
 from http.server import BaseHTTPRequestHandler
 
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
@@ -31,7 +32,6 @@ class handler(BaseHTTPRequestHandler):
             if not API_KEY:
                 raise ValueError("GEMINI_API_KEY belum disetel di Vercel Environment Variables.")
 
-            # Menggunakan endpoint gemini-flash-latest via REST API
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={API_KEY}"
             
             payload = {
@@ -51,7 +51,7 @@ class handler(BaseHTTPRequestHandler):
                 method='POST'
             )
 
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 resp_data = json.loads(resp.read().decode('utf-8'))
                 
             reply_text = resp_data["candidates"][0]["content"]["parts"][0]["text"]
@@ -61,6 +61,19 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(json.dumps({"reply": reply_text}).encode('utf-8'))
+
+        except urllib.error.HTTPError as e:
+            # Jika Google mengembalikan error sibuk (503 atau 429)
+            if e.code in [503, 429]:
+                pesan_custom = "mohon maaf saat ini server google sedang sibuk, silahkan coba lagi nanti"
+            else:
+                pesan_custom = f"HTTP Error {e.code}: {e.reason}"
+
+            self.send_response(500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": pesan_custom}).encode('utf-8'))
 
         except Exception as e:
             self.send_response(500)
